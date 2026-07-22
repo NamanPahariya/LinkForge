@@ -3,6 +3,7 @@ import cors from "cors";
 import express from "express";
 import {
   createUrl,
+  deleteUrl,
   getUrl,
   hasShortCode,
   listUrls,
@@ -89,6 +90,18 @@ export function createApp({ baseUrl = process.env.BASE_URL || "http://localhost:
 
   app.get("/api/urls/:shortCode", (request, response) => {
     const record = getUrl(request.params.shortCode);
+
+    if (!record) {
+      return response.status(404).json({ error: "Short URL not found." });
+    }
+
+    return response.status(200).json({
+      data: serializeUrl(record, normalizedBaseUrl),
+    });
+  });
+
+  app.delete("/api/urls/:shortCode", (request, response) => {
+    const record = deleteUrl(request.params.shortCode);
 
     if (!record) {
       return response.status(404).json({ error: "Short URL not found." });

@@ -17,6 +17,17 @@ export function getUrl(shortCode) {
   return record ? { ...record } : null;
 }
 
+export function deleteUrl(shortCode) {
+  const record = urls.get(shortCode);
+
+  if (!record) {
+    return null;
+  }
+
+  urls.delete(shortCode);
+  return { ...record };
+}
+
 export function listUrls({ limit = 10 } = {}) {
   return Array.from(urls.values())
     .slice(-limit)

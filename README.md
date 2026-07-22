@@ -73,6 +73,7 @@ All API results use either `{ "data": ... }` or `{ "error": "..." }`.
 | `GET` | `/api/urls` | List the 10 most recently created links |
 | `POST` | `/api/urls` | Create a short URL from `{ "url": "https://example.com" }` |
 | `GET` | `/api/urls/:shortCode` | Retrieve a stored URL record |
+| `DELETE` | `/api/urls/:shortCode` | Delete a stored short URL |
 | `GET` | `/:shortCode` | Redirect to the original URL |
 
 Example:

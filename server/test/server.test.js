@@ -107,6 +107,31 @@ test("looks up a created short URL", async () => {
   assert.equal(body.data.originalUrl, created.body.data.originalUrl);
 });
 
+test("deletes an existing short URL", async () => {
+  const created = await createShortUrl();
+  const shortCode = created.body.data.shortCode;
+  const response = await fetch(`${baseUrl}/api/urls/${shortCode}`, {
+    method: "DELETE",
+  });
+  const body = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal(body.data.shortCode, shortCode);
+  assert.equal(body.data.originalUrl, created.body.data.originalUrl);
+
+  const lookupResponse = await fetch(`${baseUrl}/api/urls/${shortCode}`);
+  assert.equal(lookupResponse.status, 404);
+});
+
+test("returns 404 when deleting an unknown short URL", async () => {
+  const response = await fetch(`${baseUrl}/api/urls/does-not-exist`, {
+    method: "DELETE",
+  });
+
+  assert.equal(response.status, 404);
+  assert.deepEqual(await response.json(), { error: "Short URL not found." });
+});
+
 test("redirects a short code to its original URL", async () => {
   const originalUrl = "https://example.com/destination";
   const created = await createShortUrl(originalUrl);

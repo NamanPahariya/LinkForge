@@ -29,6 +29,7 @@ export default function App() {
   const [isLoadingRecent, setIsLoadingRecent] = useState(true);
   const [recentError, setRecentError] = useState('');
   const [copiedCode, setCopiedCode] = useState('');
+  const [deletingCode, setDeletingCode] = useState('');
 
   useEffect(() => {
     let isCurrent = true;
@@ -108,6 +109,34 @@ export default function App() {
     }
   }
 
+  async function deleteShortUrl(item) {
+    if (!window.confirm(`Delete ${item.shortUrl}? This link will stop working.`)) return;
+
+    setDeletingCode(item.shortCode);
+    setRecentError('');
+
+    try {
+      const response = await fetch(`${apiBase}/urls/${encodeURIComponent(item.shortCode)}`, {
+        method: 'DELETE',
+      });
+      const payload = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(payload.error?.message || payload.error || 'The link could not be deleted.');
+      }
+
+      setRecentUrls((current) => current.filter(({ shortCode }) => shortCode !== item.shortCode));
+      if (result?.shortCode === item.shortCode) setResult(null);
+      if (copiedCode === item.shortCode) setCopiedCode('');
+    } catch (requestError) {
+      setRecentError(requestError.message === 'Failed to fetch'
+        ? 'The deletion service is unavailable. Please try again shortly.'
+        : requestError.message);
+    } finally {
+      setDeletingCode('');
+    }
+  }
+
   return (
     <div className="page-shell">
       <header className="site-header">
@@ -184,7 +213,9 @@ export default function App() {
           </div>
 
           {isLoadingRecent && <p className="recent-status">Loading recent links…</p>}
-          {!isLoadingRecent && recentError && <p className="recent-status error-message">{recentError}</p>}
+          {!isLoadingRecent && recentError && (
+            <p className="recent-status error-message" role="alert">{recentError}</p>
+          )}
           {!isLoadingRecent && !recentError && recentUrls.length === 0 && (
             <p className="recent-status">Your shortened links will appear here.</p>
           )}
@@ -203,9 +234,20 @@ export default function App() {
                       minute: '2-digit',
                     }).format(new Date(item.createdAt))}
                   </time>
-                  <button className="copy-button" type="button" onClick={() => copyShortUrl(item)}>
-                    {copiedCode === item.shortCode ? 'Copied!' : 'Copy'}
-                  </button>
+                  <div className="recent-actions">
+                    <button className="copy-button" type="button" onClick={() => copyShortUrl(item)}>
+                      {copiedCode === item.shortCode ? 'Copied!' : 'Copy'}
+                    </button>
+                    <button
+                      className="delete-button"
+                      type="button"
+                      onClick={() => deleteShortUrl(item)}
+                      disabled={deletingCode === item.shortCode}
+                      aria-label={`Delete short link ${item.shortUrl}`}
+                    >
+                      {deletingCode === item.shortCode ? 'Deleting…' : 'Delete'}
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>

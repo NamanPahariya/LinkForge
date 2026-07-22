@@ -137,7 +137,7 @@ input::placeholder { color: #586276; }
 input:focus { border-color: #6489f4; box-shadow: 0 0 0 3px rgba(100, 137, 244, .14); }
 input[aria-invalid='true'] { border-color: #d66f79; }
 
-.primary-button, .copy-button {
+.primary-button, .copy-button, .delete-button {
   border: 0;
   border-radius: 10px;
   cursor: pointer;
@@ -159,7 +159,7 @@ input[aria-invalid='true'] { border-color: #d66f79; }
 }
 
 .primary-button svg { width: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
-.primary-button:hover:not(:disabled), .copy-button:hover { transform: translateY(-1px); }
+.primary-button:hover:not(:disabled), .copy-button:hover, .delete-button:hover:not(:disabled) { transform: translateY(-1px); }
 .primary-button:disabled { cursor: not-allowed; opacity: .55; }
 
 .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.35); border-top-color: white; border-radius: 50%; animation: spin .7s linear infinite; }
@@ -186,6 +186,8 @@ input[aria-invalid='true'] { border-color: #d66f79; }
 .result-copy a:hover { text-decoration: underline; }
 
 .copy-button { padding: 10px 14px; color: #dfe7fa; background: #26334d; white-space: nowrap; }
+.delete-button { padding: 10px 12px; color: #f3a5ad; background: rgba(151, 52, 66, .16); white-space: nowrap; }
+.delete-button:disabled { cursor: wait; opacity: .6; }
 
 .trust-list {
   margin: 24px 0 0;
@@ -223,6 +225,7 @@ input[aria-invalid='true'] { border-color: #d66f79; }
 .recent-link-copy span { overflow: hidden; color: #68758a; font-size: .75rem; text-overflow: ellipsis; white-space: nowrap; }
 .recent-list time { color: #68758a; font-size: .72rem; white-space: nowrap; }
 .recent-list .copy-button { min-width: 67px; }
+.recent-actions { display: flex; align-items: center; gap: 8px; }
 
 footer { padding: 25px 0; border-top: 1px solid rgba(255,255,255,.07); }
 
@@ -234,8 +237,9 @@ footer { padding: 25px 0; border-top: 1px solid rgba(255,255,255,.07); }
   .shortener-card { padding: 20px; }
   .trust-list { gap: 12px; flex-wrap: wrap; }
   .recent-heading { align-items: start; flex-direction: column; gap: 6px; }
-  .recent-list li { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .recent-list li { grid-template-columns: auto minmax(0, 1fr); }
   .recent-list time { display: none; }
+  .recent-actions { grid-column: 2; }
   .recent-list .copy-button { min-width: 60px; padding-inline: 10px; }
   footer { flex-direction: column; gap: 3px; }
   footer p { margin: 3px; }

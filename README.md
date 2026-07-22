@@ -70,6 +70,7 @@ All API results use either `{ "data": ... }` or `{ "error": "..." }`.
 | Method | Endpoint | Result |
 | --- | --- | --- |
 | `GET` | `/api/health` | API health status |
+| `GET` | `/api/urls` | List the 10 most recently created links |
 | `POST` | `/api/urls` | Create a short URL from `{ "url": "https://example.com" }` |
 | `GET` | `/api/urls/:shortCode` | Retrieve a stored URL record |
 | `GET` | `/:shortCode` | Redirect to the original URL |

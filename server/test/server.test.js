@@ -55,6 +55,26 @@ test("creates a short URL", async () => {
   assert.equal(Number.isNaN(Date.parse(body.data.createdAt)), false);
 });
 
+test("lists the ten most recently created URLs newest first", async () => {
+  const createdCodes = [];
+
+  for (let index = 0; index < 12; index += 1) {
+    const created = await createShortUrl(`https://example.com/item/${index}`);
+    createdCodes.push(created.body.data.shortCode);
+  }
+
+  const response = await fetch(`${baseUrl}/api/urls`);
+  const body = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal(body.data.length, 10);
+  assert.deepEqual(
+    body.data.map((record) => record.shortCode),
+    createdCodes.slice(-10).reverse(),
+  );
+  assert.equal(body.data[0].shortUrl, `http://short.test/${createdCodes.at(-1)}`);
+});
+
 test("rejects missing and malformed URLs", async () => {
   for (const requestBody of [{}, { url: "not-a-url" }]) {
     const response = await fetch(`${baseUrl}/api/urls`, {

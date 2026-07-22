@@ -17,6 +17,13 @@ export function getUrl(shortCode) {
   return record ? { ...record } : null;
 }
 
+export function listUrls({ limit = 10 } = {}) {
+  return Array.from(urls.values())
+    .slice(-limit)
+    .reverse()
+    .map((record) => ({ ...record }));
+}
+
 export function hasShortCode(shortCode) {
   return urls.has(shortCode);
 }

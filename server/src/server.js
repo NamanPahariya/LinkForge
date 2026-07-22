@@ -5,6 +5,7 @@ import {
   createUrl,
   getUrl,
   hasShortCode,
+  listUrls,
   recordVisit,
 } from "./store.js";
 
@@ -57,6 +58,14 @@ export function createApp({ baseUrl = process.env.BASE_URL || "http://localhost:
 
   app.get("/api/health", (_request, response) => {
     response.status(200).json({ data: { status: "ok" } });
+  });
+
+  app.get("/api/urls", (_request, response) => {
+    const records = listUrls().map((record) => (
+      serializeUrl(record, normalizedBaseUrl)
+    ));
+
+    response.status(200).json({ data: records });
   });
 
   app.post("/api/urls", (request, response) => {
